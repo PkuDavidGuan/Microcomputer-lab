@@ -12,7 +12,7 @@ START:
     MOV AX,DATA
     MOV DS,AX
     
-    MOV AL, 37H
+    MOV AL,  37H                        ;2M -> 1K
     MOV DX, 0E483H
     OUT DX, AL
     MOV DX, 0E480H
@@ -21,7 +21,7 @@ START:
     MOV AL, 20H
     OUT DX, AL
     
-    MOV AL, 77H
+    MOV AL, 77H                         ;1K -> 1
     MOV DX, 0E483H
     OUT DX, AL
     MOV DX, 0E481H
