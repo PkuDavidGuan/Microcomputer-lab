@@ -6,3 +6,4 @@ This repository includes the labs completed in the Microcomputer-lab class in Pe
 4. Counter, IRQ(intel 8253)
 5. Serial interface
 6. AD & DA
+PS: Some of the codes here may not be excuted correctly, because they are the versions I wrote before the lab. But why don't I update the perfect codes? Well, sloth........
