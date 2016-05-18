@@ -1,0 +1,118 @@
+DATA SEGMENT
+
+DATA ENDS
+
+CODE SEGMENT
+    ASSUME CS:CODE,DS:DATA
+START:
+    MOV AX,DATA
+    MOV DS,AX
+    
+    MOV AL, 37H
+    MOV DX, 0E483H
+    OUT DX, AL
+    MOV DX, 0E480H
+    MOV AL, 00H
+    OUT DX, AL
+    MOV AL, 20H
+    OUT DX, AL
+    
+    MOV AL, 77H
+    MOV DX, 0E483H
+    OUT DX, AL
+    MOV DX, 0E481H
+    MOV AL, 00H
+    OUT DX, AL
+    MOV AL, 10H
+    OUT DX, AL
+
+    MOV AX,CS
+    MOV DS,AX
+    
+    MOV DX, OFFSET IRQ
+    MOV AX, 250EH
+    INT 21H
+    CLI
+    
+    MOV DX, 0EC4CH
+    MOV AL, 43H
+    OUT DX, AL
+    INC DX
+    MOV AL, 1DH
+    OUT DX, AL
+    IN AL, 21H
+    AND AL, 10111111B
+    OUT 21H, AL
+    
+    MOV AX, DATA
+    MOV DS, AX
+    MOV CX, 30
+    STI
+    
+NEXT:
+	MOV BH, 1
+LL:     MOV AH, 1
+        INT 16H
+        JNZ OVER
+        CMP BH, 0
+        JNE LL
+
+        MOV BL, 255
+        CALL BEEP
+	LOOP NEXT
+	
+OVER:
+        IN AL, 21H
+	OR AL, 01000000B
+	OUT 21H, AL
+	
+	MOV DX, 0EC4CH
+	MOV AL, 42H
+	OUT DX, AL
+	STI
+	
+	MOV AH, 4CH
+	INT 21H
+
+BEEP PROC NEAR
+	PUSH CX
+	MOV AL, 10110110B
+	OUT 43H, AL
+	MOV AX, 1190
+	OUT 42H, AL
+	MOV AL, AH
+	OUT 42H, AL
+	
+	IN AL, 61H
+	MOV AH, AL
+	OR AL, 03H
+	OUT 61H, AL
+	
+	MOV CX, 0
+L0:
+	LOOP L0
+	DEC BL
+	JNZ L0
+	
+	MOV AL, AH
+	OUT 61H, AL
+	POP CX
+	RET
+BEEP ENDP
+
+IRQ PROC FAR
+        PUSH AX
+        PUSH DX
+        MOV BH, 0
+        MOV AL, 20H
+        OUT 20H, AL
+        MOV DX, 0EC4DH
+        MOV AL, 1DH
+        OUT DX, AL
+        POP DX
+        POP AX
+        IRET
+IRQ ENDP
+
+CODE ENDS
+END START
